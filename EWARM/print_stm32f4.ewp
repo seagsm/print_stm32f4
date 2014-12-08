@@ -309,6 +309,7 @@
           <state>$PROJ_DIR$\..\Libs\STM32F4xx_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\Libs\STM32F429I-Discovery</state>
           <state>$PROJ_DIR$\..\Libs\Common</state>
+          <state>$PROJ_DIR$\..\system</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -952,6 +953,15 @@
     </settings>
   </configuration>
   <group>
+    <name>CMSYS</name>
+    <file>
+      <name>$PROJ_DIR$\..\Libs\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f429_439xx.s</name>
+    </file>
+  </group>
+  <group>
+    <name>src</name>
+  </group>
+  <group>
     <name>STM32F429I-Discovery</name>
     <file>
       <name>$PROJ_DIR$\..\Libs\STM32F429I-Discovery\stm32f429i_discovery.c</name>
@@ -1060,23 +1070,26 @@
     </file>
   </group>
   <group>
-    <name>SYSTEM</name>
+    <name>system</name>
     <file>
-      <name>$PROJ_DIR$\..\Libs\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f429_439xx.s</name>
+      <name>$PROJ_DIR$\..\system\stm32f4xx_conf.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\system\stm32f4xx_it.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\system\stm32f4xx_it.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\system\system_stm32f4xx.c</name>
     </file>
   </group>
-  <group>
-    <name>User</name>
-    <file>
-      <name>$PROJ_DIR$\..\main.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\stm32f4xx_it.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\system_stm32f4xx.c</name>
-    </file>
-  </group>
+  <file>
+    <name>$PROJ_DIR$\..\main.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\main.h</name>
+  </file>
 </project>
 
 
