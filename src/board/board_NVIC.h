@@ -55,13 +55,9 @@
 #define DMA1_Channel7_PRIORITY_GROUP      1U    /* I2C1 RX DMA transfer end.       */
 #define DMA1_Channel7_SUB_PRIORITY_GROUP  0U
 
+#define DMA2_Stream0_PRIORITY_GROUP       0U    /* SPI4 DMA interrupt. */  
+#define DMA2_Stream0_SUB_PRIORITY_GROUP   0U  
 
-/* SPI ******************************************/
-#define SPI1_IRQn_PRIORITY_GROUP      0U    /* .       */
-#define SPI1_IRQn_SUB_PRIORITY_GROUP  0U
-
-#define SPI2_IRQn_PRIORITY_GROUP      3U    /* .       */
-#define SPI2_IRQn_SUB_PRIORITY_GROUP  0U
 
 /*TIMER1 ****************************************/
 #define TIMER1_PERIOD_INTERUPT_PRIORITY_GROUP       2U

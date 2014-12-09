@@ -116,7 +116,7 @@ static void board_motor_timer_pulse_counter_init(void)
     RCC_APB1PeriphResetCmd(RCC_APB1Periph_TIM4, DISABLE);
 
     /* Time Base configuration */
-    TIM_TimeBaseStructure.TIM_Period        = 8U;
+    TIM_TimeBaseStructure.TIM_Period        = 16;//8U;
     TIM_TimeBaseStructure.TIM_Prescaler     = 0U;       /* Ftimer=fsys/(Prescaler+1),for Prescaler=71 ,Ftimer=1MHz */
     TIM_TimeBaseStructure.TIM_ClockDivision = 0U;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
