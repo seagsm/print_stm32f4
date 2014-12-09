@@ -12,71 +12,17 @@
   #define NVIC_PRIORITY_GPOUP NVIC_PriorityGroup_4       /* just priority 0-15*/
  /* It means that priority group can be 0-15, but subpriority only 0. */
 
-/* I2C1 ***********************/
-#define I2C1_EV_PRIORITY_GROUP      2U
-#define I2C1_EV_SUB_PRIORITY_GROUP  0U
-
-#define I2C1_ER_PRIORITY_GROUP      1U
-#define I2C1_ER_SUB_PRIORITY_GROUP  0U
-
-/* USART1 *********************/
-#define USART1_PRIORITY_GROUP 6U
-#define USART1_SUB_PRIORITY   0U
-
-/* USART3 */
-#define USART3_PRIORITY_GROUP 6U
-#define USART3_SUB_PRIORITY   0U
-
-
-/* TIMER4 CAPTURE ******************************/
-#define TIMER4_CAPTURE_PRIORITY_GROUP 0U        /* PPM capture. */
-#define TIMER4_CAPTURE_SUB_PRIORITY   0U
-
 /* DMA ******************************************/
 
-#define DMA1_Channel1_PRIORITY_GROUP      6U    /* ADC channels DMA transfer end.  */
-#define DMA1_Channel1_SUB_PRIORITY_GROUP  0U
-
-#define DMA1_Channel2_PRIORITY_GROUP      4U    /* UART3 DMA TX transfer end. GPS, SPI1_RX. */
-#define DMA1_Channel2_SUB_PRIORITY_GROUP  0U
-
-#define DMA1_Channel3_PRIORITY_GROUP      4U    /* UART3 DMA RX transfer end. GPS, SPI1_TX. */
-#define DMA1_Channel3_SUB_PRIORITY_GROUP  0U
-
-#define DMA1_Channel4_PRIORITY_GROUP      14U   /* UART1 DMA TX transfer end. COM1 */
-#define DMA1_Channel4_SUB_PRIORITY_GROUP  0U
-
-#define DMA1_Channel5_PRIORITY_GROUP      13U   /* UART1 DMA RX receive end. COM1 */
-#define DMA1_Channel5_SUB_PRIORITY_GROUP  0U
-
-#define DMA1_Channel6_PRIORITY_GROUP      12U    /* I2C1 TX DMA transfer end.       */
-#define DMA1_Channel6_SUB_PRIORITY_GROUP  0U
-
-#define DMA1_Channel7_PRIORITY_GROUP      1U    /* I2C1 RX DMA transfer end.       */
-#define DMA1_Channel7_SUB_PRIORITY_GROUP  0U
-
-#define DMA2_Stream0_PRIORITY_GROUP       0U    /* SPI4 DMA interrupt. */  
-#define DMA2_Stream0_SUB_PRIORITY_GROUP   0U  
-
-
-/*TIMER1 ****************************************/
-#define TIMER1_PERIOD_INTERUPT_PRIORITY_GROUP       2U
-#define TIMER1_PERIOD_INTERUPT_SUB_PRIORITY_GROUP   0U
-
-/*TIMER2 ****************************************/
-#define TIMER2_PERIOD_INTERUPT_PRIORITY_GROUP       12U
-#define TIMER2_PERIOD_INTERUPT_SUB_PRIORITY_GROUP   0U
-
-/*TIMER3 ****************************************/
-#define TIMER3_PERIOD_INTERUPT_PRIORITY_GROUP       12U
-#define TIMER3_PERIOD_INTERUPT_SUB_PRIORITY_GROUP   0U
+#define DMA2_Stream0_PRIORITY_GROUP       0U    /* SPI4 DMA interrupt. */
+#define DMA2_Stream0_SUB_PRIORITY_GROUP   0U
 
 /*TIMER4 ****************************************/
-#define TIMER4_PERIOD_INTERUPT_PRIORITY_GROUP       3U
+#define TIMER4_PERIOD_INTERUPT_PRIORITY_GROUP       3U /* PWM out counter. */
 #define TIMER4_PERIOD_INTERUPT_SUB_PRIORITY_GROUP   0U
 
 /*TIMER5 ****************************************/
-#define TIMER5_PERIOD_INTERUPT_PRIORITY_GROUP       4U
+#define TIMER5_PERIOD_INTERUPT_PRIORITY_GROUP       4U /* Encoder output. */
 #define TIMER5_PERIOD_INTERUPT_SUB_PRIORITY_GROUP   0U
 
 

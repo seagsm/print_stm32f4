@@ -31,7 +31,7 @@ void board_encoder_emulation_start(void)
 /* Stop encoder emulation timer and interrupt. */
 void board_encoder_emulation_stop(void)
 {
-    TIM_Cmd(TIM1, DISABLE);
+    TIM_Cmd(TIM5, DISABLE);
     NVIC_DisableIRQ(TIM5_IRQn);
 }
 
@@ -44,7 +44,7 @@ void board_encoder_emulation_set_target_period(uint16_t u16_period)
 /* Set current timer period. */
 static void board_encoder_emulation_set_period(uint16_t u16_period)
 {
-    TIM1->ARR = u16_period;
+    TIM5->ARR = u16_period;
 }
 
 /* Timer 5 update interrupt hundler. */
@@ -183,7 +183,7 @@ static BOARD_ERROR board_encoder_emulation_timer_init(void)
     NVIC_InitTypeDef   NVIC_InitStructure;
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 
-    /* Enable the TIM1 global Interrupt */
+    /* Enable the TIM5 global Interrupt */
     NVIC_InitStructure.NVIC_IRQChannel                      = (unsigned char)TIM5_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority    = TIMER5_PERIOD_INTERUPT_PRIORITY_GROUP;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority           = TIMER5_PERIOD_INTERUPT_SUB_PRIORITY_GROUP;
@@ -195,7 +195,7 @@ static BOARD_ERROR board_encoder_emulation_timer_init(void)
 
     /* Time Base configuration */
     TIM_TimeBaseStructure.TIM_Period        = ZERO_SPEED_PERIOD;
-    TIM_TimeBaseStructure.TIM_Prescaler     = 0U;          /* Ftimer=fsys/(Prescaler+1),for Prescaler=71 ,Ftimer=1MHz */
+    TIM_TimeBaseStructure.TIM_Prescaler     = 240U;          /* Ftimer=fsys/(Prescaler+1),for Prescaler=71 ,Ftimer=1MHz */
     TIM_TimeBaseStructure.TIM_ClockDivision = 0U;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);

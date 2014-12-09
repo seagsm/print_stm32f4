@@ -12,7 +12,7 @@ void gv_board_sys_tick_init(void)
   SysTick_Config(SystemCoreClock / 1000);
 
   /* Set SysTick interrupt priority. */
-  NVIC_SetPriority (SysTick_IRQn, 0U);
+  NVIC_SetPriority (SysTick_IRQn, 5U);
 }
 
 /* System tick interrupt handler. */

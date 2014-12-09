@@ -9,7 +9,7 @@
 #include "board_gpio_table.h"
 #include "board_motor.h"
 
-#define ZERO_SPEED_PERIOD   4000U
+#define ZERO_SPEED_PERIOD   500U
 #define PID_PROPORTIONAL    10   /* from 4000 to 50 around 4500mS */
 
        BOARD_ERROR board_encoder_emulation_init(void);

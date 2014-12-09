@@ -67,10 +67,10 @@ static void board_capture_gpio_configuration(void)
     /* Connect clock to port B for TIM3 CH1, pin PB4). */
     GPIO_InitStructure.GPIO_Mode    = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed   = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_PuPd    = GPIO_PuPd_UP ;    
+    GPIO_InitStructure.GPIO_PuPd    = GPIO_PuPd_DOWN;//GPIO_PuPd_NOPULL;//GPIO_PuPd_UP ;
     GPIO_InitStructure.GPIO_Pin     = GPIO_Pin_4;  /*PB4 -> TIM3_CH1 */
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-    /* Connect TIM3 pins to AF2 */  
+    /* Connect TIM3 pins to AF2 */
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_TIM3);
 }
 
@@ -131,7 +131,7 @@ static void board_capture_dma1_ch5_stream4_init(void)
     /* DMA reset. */
     DMA_DeInit(DMA1_Stream4);
     /* Fill DMA init structure before initialisation. */
-    DMA_InitStructure.DMA_Channel               = DMA_Channel_5;  
+    DMA_InitStructure.DMA_Channel               = DMA_Channel_5;
     DMA_InitStructure.DMA_PeripheralBaseAddr    = (uint32_t)(&TIM3->CCR1);
     DMA_InitStructure.DMA_Memory0BaseAddr       = (uint32_t)(&u16_board_capture_period_value);
     DMA_InitStructure.DMA_DIR                   = DMA_DIR_PeripheralToMemory;
@@ -141,8 +141,8 @@ static void board_capture_dma1_ch5_stream4_init(void)
     DMA_InitStructure.DMA_PeripheralDataSize    = DMA_PeripheralDataSize_HalfWord;
     DMA_InitStructure.DMA_MemoryDataSize        = DMA_MemoryDataSize_HalfWord;
     DMA_InitStructure.DMA_Mode                  = DMA_Mode_Circular;
-    DMA_InitStructure.DMA_Priority              = DMA_Priority_High;
-    DMA_InitStructure.DMA_FIFOMode              = DMA_FIFOMode_Disable;         
+    DMA_InitStructure.DMA_Priority              = DMA_Priority_Low;
+    DMA_InitStructure.DMA_FIFOMode              = DMA_FIFOMode_Disable;
     DMA_InitStructure.DMA_FIFOThreshold         = DMA_FIFOThreshold_HalfFull;
     DMA_InitStructure.DMA_MemoryBurst           = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst       = DMA_PeripheralBurst_Single;
@@ -150,8 +150,8 @@ static void board_capture_dma1_ch5_stream4_init(void)
     DMA_Init(DMA1_Stream4, &DMA_InitStructure);
     /* TIM3 CH1 ->  DMA1 CH5 STR4 enable. */
     TIM_DMACmd(TIM3, TIM_DMA_CC1, ENABLE);
-    /* Start DMA transfer. */    
-    DMA_Cmd(DMA1_Stream4, ENABLE);  
+    /* Start DMA transfer. */
+    DMA_Cmd(DMA1_Stream4, ENABLE);
 }
 
 /* This function should initialiseTIM3 CH2 DMA CH5 STREAM5. */
@@ -163,7 +163,7 @@ static void board_capture_dma1_ch5_stream5_init(void)
     /* DMA reset. */
     DMA_DeInit(DMA1_Stream5);
     /* Fill DMA init structure before initialisation. */
-    DMA_InitStructure.DMA_Channel               = DMA_Channel_5;  
+    DMA_InitStructure.DMA_Channel               = DMA_Channel_5;
     DMA_InitStructure.DMA_PeripheralBaseAddr    = (uint32_t)(&TIM3->CCR2);
     DMA_InitStructure.DMA_Memory0BaseAddr       = (uint32_t)(&u16_board_capture_duty_value);
     DMA_InitStructure.DMA_DIR                   = DMA_DIR_PeripheralToMemory;
@@ -173,8 +173,8 @@ static void board_capture_dma1_ch5_stream5_init(void)
     DMA_InitStructure.DMA_PeripheralDataSize    = DMA_PeripheralDataSize_HalfWord;
     DMA_InitStructure.DMA_MemoryDataSize        = DMA_MemoryDataSize_HalfWord;
     DMA_InitStructure.DMA_Mode                  = DMA_Mode_Circular;
-    DMA_InitStructure.DMA_Priority              = DMA_Priority_Low;
-    DMA_InitStructure.DMA_FIFOMode              = DMA_FIFOMode_Disable;         
+    DMA_InitStructure.DMA_Priority              = DMA_Priority_High;
+    DMA_InitStructure.DMA_FIFOMode              = DMA_FIFOMode_Disable;
     DMA_InitStructure.DMA_FIFOThreshold         = DMA_FIFOThreshold_HalfFull;
     DMA_InitStructure.DMA_MemoryBurst           = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst       = DMA_PeripheralBurst_Single;
@@ -182,7 +182,7 @@ static void board_capture_dma1_ch5_stream5_init(void)
     DMA_Init(DMA1_Stream5, &DMA_InitStructure);
     /* TIM3 CH2 ->  DMA1 CH5 STR5 enable. */
     TIM_DMACmd(TIM3, TIM_DMA_CC2, ENABLE);
-    /* Start DMA transfer. */    
-    DMA_Cmd(DMA1_Stream5, ENABLE);  
+    /* Start DMA transfer. */
+    DMA_Cmd(DMA1_Stream5, ENABLE);
 }
 

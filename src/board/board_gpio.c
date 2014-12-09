@@ -8,32 +8,32 @@
 BOARD_ERROR be_board_gpio_init(void)
 {
     BOARD_ERROR be_result = BOARD_ERR_OK;
-    
+
     be_result |= be_board_pin_init( GPIOG, GPIO_Pin_13, GPIO_Speed_100MHz, GPIO_Mode_OUT);   /* PG13, GREEN LED. */
     be_result |= be_board_pin_init( GPIOG, GPIO_Pin_14, GPIO_Speed_100MHz, GPIO_Mode_OUT);   /* PG14, RED LED. */
 
     be_result |= be_board_pin_init( GPIOA, GPIO_Pin_10, GPIO_Speed_100MHz, GPIO_Mode_OUT);   /* PA10, Test pin. */
-    
-    GPIO_SetBits( GPIOG, GPIO_Pin_13); 
-    GPIO_SetBits( GPIOG, GPIO_Pin_14); 
-    GPIO_SetBits( GPIOA, GPIO_Pin_10); 
-    
+
+    //GPIO_SetBits( GPIOG, GPIO_Pin_13);
+    //GPIO_SetBits( GPIOG, GPIO_Pin_14);
+    GPIO_SetBits( GPIOA, GPIO_Pin_10);
+
     /* Outputs GPIO. */
     be_result |= be_board_pin_init( GPIOA, GPIO_Pin_5,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PA5  */  /* Pulse. */
     be_result |= be_board_pin_init( GPIOG, GPIO_Pin_2,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PG2  */  /* Dir. */
     be_result |= be_board_pin_init( GPIOG, GPIO_Pin_3,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PG3 */   /* Enable. */
-    
+
     be_result |= be_board_pin_init( GPIOB, GPIO_Pin_7,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PB7 */  /* Encoder out A(CW). */
     be_result |= be_board_pin_init( GPIOB, GPIO_Pin_3,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PB3 */  /* Encoder out B(CCW). */
-    
-#if 0     
+
+#if 0
     be_result |= be_board_pin_init( GPIOC, GPIO_Pin_13, GPIO_Speed_10MHz,GPIO_Mode_Out_PP);  /* PC13 */  /* AGP emulation output. */ /* Reset value have to be "1". */
 
     GPIO_ResetBits( GPIOB, GPIO_Pin_0 );
-    GPIO_ResetBits( GPIOB, GPIO_Pin_2 );  
-    GPIO_ResetBits( GPIOB, GPIO_Pin_10);    
-    GPIO_ResetBits( GPIOB, GPIO_Pin_11);    
-    GPIO_ResetBits( GPIOB, GPIO_Pin_12);   
+    GPIO_ResetBits( GPIOB, GPIO_Pin_2 );
+    GPIO_ResetBits( GPIOB, GPIO_Pin_10);
+    GPIO_ResetBits( GPIOB, GPIO_Pin_11);
+    GPIO_ResetBits( GPIOB, GPIO_Pin_12);
     GPIO_SetBits(   GPIOC, GPIO_Pin_13);    /* Reset value of AGP emmulator have to be "1". */
 
     /* Inputs GPIO. */
@@ -48,7 +48,7 @@ BOARD_ERROR be_board_gpio_init(void)
     be_result |= be_board_pin_init( GPIOC, GPIO_Pin_14, GPIO_Speed_10MHz,GPIO_Mode_IPU);     /* PC14 */  /* AGP Input. */
     be_result |= be_board_pin_init( GPIOC, GPIO_Pin_15, GPIO_Speed_10MHz,GPIO_Mode_IPU);     /* PC15 */  /* Head Gear Input. */
 #endif
-    
+
     return(be_result);
 }
 
@@ -120,7 +120,7 @@ BOARD_ERROR be_board_pin_init(
     else if(gpio_board_port == GPIOK)
     {
         RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOK , ENABLE);
-    }    
+    }
     else
     {
         be_result = BOARD_ERR_ERROR;
