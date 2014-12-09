@@ -32,7 +32,7 @@ BOARD_ERROR be_board_init_main_init(void)
                 be_result = board_motor_init();  /* Init TIM3 for PWM, TIM4 for PWM counter. */
                 break;
             case (4U):
-         //       be_result = be_board_capture_pwm_init();
+                be_result = be_board_capture_pwm_init();
                 break;
             case (5U):
          //       be_result = board_spi_1_dma_slave_configuration();

@@ -10,6 +10,7 @@
 #include "board_sys_tick.h"
 #include "board_gpio.h"
 #include "board_motor.h"
+#include "board_capture.h"
 
 
 /*
@@ -17,7 +18,7 @@
 #include "board_uart.h"
 #include "board_pwm.h"
 #include "board_spi_dma.h"
-#include "board_capture.h"
+
 #include "board_encoder_emulation.h"
 
 */

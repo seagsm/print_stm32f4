@@ -52,6 +52,8 @@ int main( void)
           //          be_result = board_spi_1_dma_start();
                     
                     v_board_stateUpdateCurrentState(BOARD_SYSTEM_RUN);
+                    /* Input parameter are pcs_capture_state CW or CCW. */
+                    board_capture_pwm_TIM_start(PWM_CAPTURE_CW_START);
                 }
                 /* Infinite start function should be added here. */
                 GPIO_SetBits( GPIOG, GPIO_Pin_13);
