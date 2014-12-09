@@ -52,9 +52,12 @@ int main( void)
           //          be_result = board_spi_1_dma_start();
                     
                     v_board_stateUpdateCurrentState(BOARD_SYSTEM_RUN);
+                    /* DEBUG. */
                     /* Input parameter are pcs_capture_state CW or CCW. */
                     board_capture_pwm_TIM_start(PWM_CAPTURE_CW_START);
+                    board_encoder_emulation_start();
                     board_spi_4_dma_start();
+                    /* DEBUG. */
                 }
                 /* Infinite start function should be added here. */
                 GPIO_SetBits( GPIOG, GPIO_Pin_13);
@@ -63,7 +66,10 @@ int main( void)
                 GPIO_SetBits( GPIOG, GPIO_Pin_14);
                 GPIO_ResetBits( GPIOG, GPIO_Pin_13);
                 gv_board_sys_tick_delay(100U);
+
+                /* DEBUG. */
                 board_motor_step(1);
+                /* DEBUG. */
                 
                 break;
 

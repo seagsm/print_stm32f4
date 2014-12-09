@@ -26,7 +26,7 @@ BOARD_ERROR be_board_init_main_init(void)
          //      /* be_result = be_board_uart_init(); */  /* Init UART modules. */
                 break;
             case (2U):
-         //       be_result = board_encoder_emulation_init();
+                be_result = board_encoder_emulation_init();
                 break;
             case (3U):
                 be_result = board_motor_init();  /* Init TIM3 for PWM, TIM4 for PWM counter. */

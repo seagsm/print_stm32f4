@@ -963,6 +963,12 @@
       <name>$PROJ_DIR$\..\src\board\board_capture.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\src\board\board_encoder_emulation.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\board\board_encoder_emulation.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\src\board\board_gpio.c</name>
     </file>
     <file>

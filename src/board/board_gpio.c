@@ -16,18 +16,17 @@ BOARD_ERROR be_board_gpio_init(void)
     
     GPIO_SetBits( GPIOG, GPIO_Pin_13); 
     GPIO_SetBits( GPIOG, GPIO_Pin_14); 
-    
     GPIO_SetBits( GPIOA, GPIO_Pin_10); 
-    
-   
     
     /* Outputs GPIO. */
     be_result |= be_board_pin_init( GPIOA, GPIO_Pin_5,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PA5  */  /* Pulse. */
     be_result |= be_board_pin_init( GPIOG, GPIO_Pin_2,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PG2  */  /* Dir. */
     be_result |= be_board_pin_init( GPIOG, GPIO_Pin_3,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PG3 */   /* Enable. */
+    
+    be_result |= be_board_pin_init( GPIOB, GPIO_Pin_7,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PB7 */  /* Encoder out A(CW). */
+    be_result |= be_board_pin_init( GPIOB, GPIO_Pin_3,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PB3 */  /* Encoder out B(CCW). */
+    
 #if 0     
-    be_result |= be_board_pin_init( GPIOB, GPIO_Pin_11, GPIO_Speed_10MHz,GPIO_Mode_Out_PP);  /* PB11 */  /* Encoder A. */
-    be_result |= be_board_pin_init( GPIOB, GPIO_Pin_12, GPIO_Speed_10MHz,GPIO_Mode_Out_PP);  /* PB12 */  /* Encoder B. */
     be_result |= be_board_pin_init( GPIOC, GPIO_Pin_13, GPIO_Speed_10MHz,GPIO_Mode_Out_PP);  /* PC13 */  /* AGP emulation output. */ /* Reset value have to be "1". */
 
     GPIO_ResetBits( GPIOB, GPIO_Pin_0 );

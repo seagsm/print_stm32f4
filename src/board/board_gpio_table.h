@@ -8,8 +8,9 @@
 #define GPIO_A_OUT_MOTOR_PULSE                  GPIO_Pin_5
 #define GPIO_G_OUT_MOTOR_ENABLE                 GPIO_Pin_3
 
-#define GPIO_B_OUT_ENCODER_A                    GPIO_Pin_11
-#define GPIO_B_OUT_ENCODER_B                    GPIO_Pin_12
+#define GPIO_B_OUT_ENCODER_A                    GPIO_Pin_7
+#define GPIO_B_OUT_ENCODER_B                    GPIO_Pin_3
+
 
 #define GPIO_C_OUT_APG_SENSOR                   GPIO_Pin_13
 

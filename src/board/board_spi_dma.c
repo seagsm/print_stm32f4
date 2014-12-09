@@ -102,7 +102,8 @@ void DMA2_Stream0_IRQHandler(void)
     /* Reset DMA transfer complete interrupt.*/
     if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0)) 
     {
-        DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);    
+        DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);  
+
         if( SPIReceivedValue[0] == 0x7063U)
         {
             switch(SPIReceivedValue[1])
@@ -114,7 +115,7 @@ void DMA2_Stream0_IRQHandler(void)
                         /* Start PWM capture from CW channel. */
                         board_capture_pwm_TIM_start(PWM_CAPTURE_CW_START);
                         /* Start encoder emulation module. */
-                       // board_encoder_emulation_start();
+                        board_encoder_emulation_start();
                     }
                     break;
 
@@ -125,13 +126,13 @@ void DMA2_Stream0_IRQHandler(void)
                         /* Start PWM capture from CCW channel. */
                         board_capture_pwm_TIM_start(PWM_CAPTURE_CCW_START);
                         /* Start encoder emulation module.     */
-                        //board_encoder_emulation_start();
+                        board_encoder_emulation_start();
                     }
                     break;
 
                 case 0xBDFDU : /* STOP */
                     /* Stop encoder emulation. */
-                    //board_encoder_emulation_stop();
+                    board_encoder_emulation_stop();
                     /* Stop PWM capture of CW. */
                     board_capture_pwm_TIM_stop();
                     break;
