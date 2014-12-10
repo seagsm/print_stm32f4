@@ -152,8 +152,11 @@ void DMA2_Stream0_IRQHandler(void)
         else if( SPI_value[0] == 0x3063U)
         {
             GPIO_SetBits( GPIOG, GPIO_Pin_13);
+            /* Stop encoder emulation. */
+            board_encoder_emulation_stop();
+            /* Stop PWM capture of CW. */
+            board_capture_pwm_TIM_stop();
         }
-
         else
         {
             GPIO_ResetBits( GPIOG, GPIO_Pin_13);

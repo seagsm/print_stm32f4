@@ -144,7 +144,7 @@ static void board_encoder_emulation_float_proccess(void)
     }
     else
     {
-        u16_target_period = ZERO_SPEED_PERIOD;
+        /* u16_target_period = ZERO_SPEED_PERIOD; */ /* This value setted at start of module. If during PWM capture, PWM duty is ZERO, it is error.*/
     }
 
     f32_target_period  = (float)u16_target_period;
