@@ -100,6 +100,7 @@ BOARD_ERROR board_spi_4_dma_start(void)
 void DMA2_Stream0_IRQHandler(void)
 {
     uint16_t SPI_value[2];
+    PWM_CAPTURE_STATE pcsState;
     /* Reset DMA transfer complete interrupt.*/
     if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0))
     {
@@ -113,11 +114,14 @@ void DMA2_Stream0_IRQHandler(void)
             GPIO_SetBits( GPIOA, GPIO_Pin_10);
 
             GPIO_SetBits( GPIOG, GPIO_Pin_13);
+            /* Get current state. */
+            pcsState = board_capture_get_pwm_command();
+
             switch(SPI_value[1])
             {
                 case 0xBDFFU : /* CW */
                 case 0xBFFFU :
-                    if(board_capture_get_pwm_command() == PWM_CAPTURE_STOP)
+                    if((pcsState == PWM_CAPTURE_STOP) || (pcsState == PWM_CAPTURE_CCW_START))
                     {
                         /* Start PWM capture from CW channel. */
                         board_capture_pwm_TIM_start(PWM_CAPTURE_CW_START);
@@ -128,7 +132,7 @@ void DMA2_Stream0_IRQHandler(void)
 
                 case 0xBDFBU :
                 case 0xBFFBU : /* CCW */
-                    if(board_capture_get_pwm_command() == PWM_CAPTURE_STOP)
+                    if((pcsState == PWM_CAPTURE_STOP) || (pcsState == PWM_CAPTURE_CW_START))
                     {
                         /* Start PWM capture from CCW channel. */
                         board_capture_pwm_TIM_start(PWM_CAPTURE_CCW_START);
@@ -152,10 +156,12 @@ void DMA2_Stream0_IRQHandler(void)
         else if( SPI_value[0] == 0x3063U)
         {
             GPIO_SetBits( GPIOG, GPIO_Pin_13);
-            /* Stop encoder emulation. */
-            board_encoder_emulation_stop();
+
             /* Stop PWM capture of CW. */
             board_capture_pwm_TIM_stop();
+            /* Stop encoder emulation. */
+            board_encoder_emulation_stop();
+
         }
         else
         {

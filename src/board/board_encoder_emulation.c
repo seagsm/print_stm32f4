@@ -138,9 +138,9 @@ static void board_encoder_emulation_float_proccess(void)
     f32_current_period = (float)u16_current_period;
 
     /* Calculation of first aproximation of DUTY -> ENCODER PERIOD */
-    if(u16_board_capture_duty_value > 0U)
+    if(u16_board_capture_duty_value > 40U)
     {
-        u16_target_period = 24000U/u16_board_capture_duty_value;
+        u16_target_period = 48000U/u16_board_capture_duty_value;
     }
     else
     {
