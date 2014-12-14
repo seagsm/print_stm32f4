@@ -104,6 +104,7 @@ void DMA2_Stream0_IRQHandler(void)
     /* Reset DMA transfer complete interrupt.*/
     if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0))
     {
+        GPIO_SetBits( GPIOB, GPIO_Pin_0);
         SPI_value[0] = SPIReceivedValue[0];
         SPI_value[1] = SPIReceivedValue[1];
 
@@ -111,8 +112,6 @@ void DMA2_Stream0_IRQHandler(void)
 
         if( SPI_value[0] == 0x7063U)
         {
-            GPIO_SetBits( GPIOA, GPIO_Pin_10);
-
             GPIO_SetBits( GPIOG, GPIO_Pin_13);
             /* Get current state. */
             pcsState = board_capture_get_pwm_command();
@@ -121,6 +120,7 @@ void DMA2_Stream0_IRQHandler(void)
             {
                 case 0xBDFFU : /* CW */
                 case 0xBFFFU :
+                    GPIO_SetBits( GPIOA, GPIO_Pin_10);
                     if((pcsState == PWM_CAPTURE_STOP) || (pcsState == PWM_CAPTURE_CCW_START))
                     {
                         /* Start PWM capture from CW channel. */
@@ -128,10 +128,12 @@ void DMA2_Stream0_IRQHandler(void)
                         /* Start encoder emulation module. */
                         board_encoder_emulation_start();
                     }
+                    GPIO_ResetBits( GPIOA, GPIO_Pin_10);
                     break;
 
                 case 0xBDFBU :
                 case 0xBFFBU : /* CCW */
+                    GPIO_SetBits( GPIOA, GPIO_Pin_11);
                     if((pcsState == PWM_CAPTURE_STOP) || (pcsState == PWM_CAPTURE_CW_START))
                     {
                         /* Start PWM capture from CCW channel. */
@@ -139,19 +141,21 @@ void DMA2_Stream0_IRQHandler(void)
                         /* Start encoder emulation module.     */
                         board_encoder_emulation_start();
                     }
+                    GPIO_ResetBits( GPIOA, GPIO_Pin_11);
                     break;
 
                 case 0xBDFDU : /* STOP */
                 case 0xBFFDU : /* STOP */
+                    GPIO_SetBits( GPIOA, GPIO_Pin_12);
                     /* Stop encoder emulation. */
                     board_encoder_emulation_stop();
                     /* Stop PWM capture of CW. */
                     board_capture_pwm_TIM_stop();
+                    GPIO_ResetBits( GPIOA, GPIO_Pin_12);
                     break;
                 default:
                     break;
             }
-            GPIO_ResetBits( GPIOA, GPIO_Pin_10);
         }
         else if( SPI_value[0] == 0x3063U)
         {
@@ -168,6 +172,8 @@ void DMA2_Stream0_IRQHandler(void)
             GPIO_ResetBits( GPIOG, GPIO_Pin_13);
             GPIO_SetBits( GPIOG, GPIO_Pin_14);
         }
+
+        GPIO_ResetBits( GPIOB, GPIO_Pin_0);
 
         DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
     }

@@ -13,10 +13,16 @@ BOARD_ERROR be_board_gpio_init(void)
     be_result |= be_board_pin_init( GPIOG, GPIO_Pin_14, GPIO_Speed_100MHz, GPIO_Mode_OUT);   /* PG14, RED LED. */
 
     be_result |= be_board_pin_init( GPIOA, GPIO_Pin_10, GPIO_Speed_100MHz, GPIO_Mode_OUT);   /* PA10, Test pin. */
+    be_result |= be_board_pin_init( GPIOA, GPIO_Pin_11, GPIO_Speed_100MHz, GPIO_Mode_OUT);   /* PA11, Test pin. */
+    be_result |= be_board_pin_init( GPIOA, GPIO_Pin_12, GPIO_Speed_100MHz, GPIO_Mode_OUT);   /* PA12, Test pin. */
+    be_result |= be_board_pin_init( GPIOB, GPIO_Pin_0, GPIO_Speed_100MHz, GPIO_Mode_OUT);    /* PB0, Test pin. */
 
     //GPIO_SetBits( GPIOG, GPIO_Pin_13);
     //GPIO_SetBits( GPIOG, GPIO_Pin_14);
-    GPIO_SetBits( GPIOA, GPIO_Pin_10);
+    GPIO_ResetBits( GPIOA, GPIO_Pin_10);
+    GPIO_ResetBits( GPIOA, GPIO_Pin_11);
+    GPIO_ResetBits( GPIOA, GPIO_Pin_12);
+    GPIO_ResetBits( GPIOB, GPIO_Pin_0);
 
     /* Outputs GPIO. */
     be_result |= be_board_pin_init( GPIOA, GPIO_Pin_5,  GPIO_Speed_100MHz, GPIO_Mode_OUT);  /* PA5  */  /* Pulse. */
