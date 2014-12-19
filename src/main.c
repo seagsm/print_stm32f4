@@ -49,13 +49,13 @@ int main( void)
                     /* One time start function should be added here. */
 
                     /* Start SPI1 + DMA module. */
-                    be_result = board_spi_4_dma_start();
+                    /* be_result = board_spi_4_dma_start(); */
 
                     v_board_stateUpdateCurrentState(BOARD_SYSTEM_RUN);
 
                     /* DEBUG. */
                     /* Input parameter are pcs_capture_state CW or CCW. */
-                    //board_capture_pwm_TIM_start(PWM_CAPTURE_CW_START);
+                    board_capture_pwm_TIM_start();
                     //board_encoder_emulation_start();
                     //
                     /* DEBUG. */
@@ -69,7 +69,7 @@ int main( void)
                 gv_board_sys_tick_delay(100U);
 
                 /* DEBUG. */
-                //board_motor_step(1);
+                board_motor_step(1);
                 /* DEBUG. */
 
                 break;

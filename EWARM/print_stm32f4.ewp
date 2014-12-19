@@ -997,9 +997,15 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\src\board\board_spi_dma.c</name>
+      <excluded>
+        <configuration>Template</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\src\board\board_spi_dma.h</name>
+      <excluded>
+        <configuration>Template</configuration>
+      </excluded>
     </file>
     <file>
       <name>$PROJ_DIR$\..\src\board\board_state.c</name>

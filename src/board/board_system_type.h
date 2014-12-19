@@ -81,9 +81,9 @@ typedef enum
 
 typedef enum
 {
-    PWM_CAPTURE_STOP        = 0,
-    PWM_CAPTURE_CW_START    = 1,
-    PWM_CAPTURE_CCW_START   = 2               
+    PWM_CAPTURE_STOP    = 0,
+    PWM_CAPTURE_CW      = 1,
+    PWM_CAPTURE_CCW     = 2               
 
 }   PWM_CAPTURE_STATE; /* PWM capture command - start , stop... */
 

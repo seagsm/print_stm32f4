@@ -138,15 +138,45 @@ static void board_encoder_emulation_float_proccess(void)
     f32_current_period = (float)u16_current_period;
 
     /* Calculation of first aproximation of DUTY -> ENCODER PERIOD */
-    if(u16_board_capture_duty_value > 40U)
+    
+    /* 984 -> 10.9(3)uS ( (1/90000000)*984 ) */
+    
+    /*
+        F encoder = (4)*((1/90000000) * (240 + 1) * 48 ) = 514uS
+        4 - sin + cos.
+        240 - prescaler
+        48 - period 
+    */
+    
+    if(pcs_state == PWM_CAPTURE_CW)
     {
-        u16_target_period = 48000U/u16_board_capture_duty_value;
+        /* ++ */
+        if(u16_board_capture_duty_TIM2_value > 40U)
+        {
+            u16_target_period = 48000U/u16_board_capture_duty_TIM2_value;
+        }
+        else
+        {
+            /* u16_target_period = ZERO_SPEED_PERIOD; */ /* This value setted at start of module. If during PWM capture, PWM duty is ZERO, it is error.*/
+        }
+    }
+    else if(pcs_state == PWM_CAPTURE_CCW)
+    {
+        /* -- */
+        if(u16_board_capture_duty_TIM3_value > 40U)
+        {
+            u16_target_period = 48000U/u16_board_capture_duty_TIM3_value;
+        }
+        else
+        {
+            /* u16_target_period = ZERO_SPEED_PERIOD; */ /* This value setted at start of module. If during PWM capture, PWM duty is ZERO, it is error.*/
+        }
     }
     else
     {
-        /* u16_target_period = ZERO_SPEED_PERIOD; */ /* This value setted at start of module. If during PWM capture, PWM duty is ZERO, it is error.*/
-    }
 
+    }
+     
     f32_target_period  = (float)u16_target_period;
 
     /* Calculate new approaching. */
@@ -158,13 +188,13 @@ static void board_encoder_emulation_float_proccess(void)
     board_encoder_emulation_set_period(u16_current_period);
 
     /* Here is a place for generation of encoder signals. */
-    if(pcs_state == PWM_CAPTURE_CW_START)
+    if(pcs_state == PWM_CAPTURE_CW)
     {
         /* ++ */
         board_encoder_emulation_output(1);
 
     }
-    else if(pcs_state == PWM_CAPTURE_CCW_START)
+    else if(pcs_state == PWM_CAPTURE_CCW)
     {
         /* -- */
         board_encoder_emulation_output(-1);
@@ -193,9 +223,10 @@ static BOARD_ERROR board_encoder_emulation_timer_init(void)
     /* Init Timer1 like timer. */
     RCC_APB1PeriphClockCmd (RCC_APB1Periph_TIM5, ENABLE);
 
+    /* Timer 5 work from 90MHz source clock. */
     /* Time Base configuration */
     TIM_TimeBaseStructure.TIM_Period        = ZERO_SPEED_PERIOD;
-    TIM_TimeBaseStructure.TIM_Prescaler     = 240U;          /* Ftimer=fsys/(Prescaler+1),for Prescaler=71 ,Ftimer=1MHz */
+    TIM_TimeBaseStructure.TIM_Prescaler     = 120U;          /* Ftimer=fsys/(Prescaler+1),for Prescaler=71 ,Ftimer=1MHz */
     TIM_TimeBaseStructure.TIM_ClockDivision = 0U;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);

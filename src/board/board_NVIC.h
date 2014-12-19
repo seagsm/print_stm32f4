@@ -12,10 +12,12 @@
   #define NVIC_PRIORITY_GPOUP NVIC_PriorityGroup_4       /* just priority 0-15*/
  /* It means that priority group can be 0-15, but subpriority only 0. */
 
-/* DMA ******************************************/
-
-#define DMA2_Stream0_PRIORITY_GROUP       0U    /* SPI4 DMA interrupt. */
-#define DMA2_Stream0_SUB_PRIORITY_GROUP   0U
+/*TIMER2 ****************************************/
+#define TIMER2_PERIOD_INTERUPT_PRIORITY_GROUP       1U /* PWM capture. */
+#define TIMER2_PERIOD_INTERUPT_SUB_PRIORITY_GROUP   0U
+/*TIMER3 ****************************************/
+#define TIMER3_PERIOD_INTERUPT_PRIORITY_GROUP       1U /* PWM capture. */
+#define TIMER3_PERIOD_INTERUPT_SUB_PRIORITY_GROUP   0U
 
 /*TIMER4 ****************************************/
 #define TIMER4_PERIOD_INTERUPT_PRIORITY_GROUP       3U /* PWM out counter. */
