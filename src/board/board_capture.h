@@ -37,5 +37,9 @@ void board_capture_set_pwm_command(PWM_CAPTURE_STATE command);
 
 uint16_t board_capture_pwm_TIM2_duty(void);
 uint16_t board_capture_pwm_TIM3_duty(void);
+static void board_capture_duty_TIM2_filter( uint16_t u16_duty);
+static void board_capture_duty_TIM3_filter( uint16_t u16_duty);
+
+
 
 #endif

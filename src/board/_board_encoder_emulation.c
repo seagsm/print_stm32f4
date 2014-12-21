@@ -17,13 +17,13 @@ BOARD_ERROR board_encoder_emulation_init(void)
 }
 
 /* Start encoder emulation timer and interrupt. */
-void board_encoder_emulation_start(void)
+void board_encoder_emulation_start(int32_t i32_omega)
 {
     /* here should be calculation of period. */
 
 
     /* Set start period. */
-    /* board_encoder_emulation_set_period(ZERO_SPEED_PERIOD); start period should be set before function call. */
+    board_encoder_emulation_set_period(ZERO_SPEED_PERIOD);
 
     /* Enable counter. */
     TIM_Cmd(TIM5, ENABLE);
@@ -57,22 +57,136 @@ void TIM5_IRQHandler(void)
     {
          TIM_ClearITPendingBit(TIM5, TIM_IT_Update);            /* Counter overflow, reset interrupt */
          /* board_encoder_emulation_proccess(); */
-        // board_encoder_emulation_float_proccess();
+         board_encoder_emulation_float_proccess();
     }
 }
 
-
-void board_encoder_emulation_set_frequency(int32_t i32_freq)
+#if 0
+/* For test only. */
+static void _test_board_encoder_emulation_proccess(void)
 {
+    uint16_t u16_current_period = 0U;
 
+    static uint8_t u8_flag = 0U;
 
+    if(u8_flag == 0U)
+    {
+        GPIO_ResetBits( GPIOB, GPIO_Pin_1);
+        u8_flag = 1U;
+    }
+    else
+    {
+        GPIO_SetBits( GPIOB, GPIO_Pin_1);
+        u8_flag = 0U;
+    }
 
+    u16_current_period = TIM5->ARR;
+
+    if(u16_current_period < 100U)
+    {
+        u16_current_period = ZERO_SPEED_PERIOD;
+    }
+    else
+    {
+        u16_current_period--;
+    }
+    board_encoder_emulation_set_period(u16_current_period);
 }
+#endif
 
 #if 0
+/* Integer calculation of PID approaching. */
+static void board_encoder_emulation_proccess(void)
+{
+    uint16_t u16_current_period = 0U;
+
+    int32_t i32_current_period  = 0;
+    int32_t i32_target_period   = 0;
+    int32_t i32_new_period      = 0;
+
+
+    u16_current_period = TIM5->ARR;
+
+    i32_current_period = (int32_t)u16_current_period;
+    i32_target_period = (int32_t)u16_target_period;
+
+    i32_new_period = i32_current_period + ((i32_target_period - i32_current_period)/PID_PROPORTIONAL);
+
+    u16_current_period = (uint16_t)i32_new_period;
+
+    board_encoder_emulation_set_period(u16_current_period);
+}
+#endif
+
 /* Float calculation of PID approaching. */
 static void board_encoder_emulation_float_proccess(void)
 {
+    uint16_t u16_current_period = 0U;
+    float f32_current_period    = (float)0;
+    float f32_target_period     = (float)0;
+    float f32_new_period        = (float)0;
+
+    PWM_CAPTURE_STATE pcs_state;
+
+    /* Get current channel of PWM capture. CW or CCW or Stop. */
+    pcs_state = board_capture_get_pwm_command();
+
+/* DEBUG pcs_state = PWM_CAPTURE_CW_START;*/
+
+
+
+    /* Read current encoder period. */
+    u16_current_period = TIM5->ARR;
+
+    f32_current_period = (float)u16_current_period;
+
+    /* Calculation of first aproximation of DUTY -> ENCODER PERIOD */
+
+    /* 984 -> 10.9(3)uS ( (1/90000000)*984 ) */
+
+    /*
+        F encoder = (4)*((1/90000000) * (240 + 1) * 48 ) = 514uS
+        4 - sin + cos.
+        240 - prescaler
+        48 - period
+    */
+
+    if(pcs_state == PWM_CAPTURE_CW)
+    {
+        /* ++ */
+        if(u16_board_capture_duty_TIM2_value > 40U)
+        {
+            u16_target_period = 48000U/u16_board_capture_duty_TIM2_value;
+        }
+        else
+        {
+            /* u16_target_period = ZERO_SPEED_PERIOD; */ /* This value setted at start of module. If during PWM capture, PWM duty is ZERO, it is error.*/
+        }
+    }
+    else if(pcs_state == PWM_CAPTURE_CCW)
+    {
+        /* -- */
+        if(u16_board_capture_duty_TIM3_value > 40U)
+        {
+            u16_target_period = 48000U/u16_board_capture_duty_TIM3_value;
+        }
+        else
+        {
+            /* u16_target_period = ZERO_SPEED_PERIOD; */ /* This value setted at start of module. If during PWM capture, PWM duty is ZERO, it is error.*/
+        }
+    }
+    else
+    {
+
+    }
+
+    f32_target_period  = (float)u16_target_period;
+
+    /* Calculate new approaching. */
+    f32_new_period = f32_current_period + ((f32_target_period - f32_current_period)/((float)PID_PROPORTIONAL));
+
+    u16_current_period = (uint16_t)f32_new_period;
+
     /* Set new period to encoder timer. */
     board_encoder_emulation_set_period(u16_current_period);
 
@@ -93,7 +207,6 @@ static void board_encoder_emulation_float_proccess(void)
 
     }
 }
-#endif
 
 /* Initialisation of timer for encoder emulation. */
 static BOARD_ERROR board_encoder_emulation_timer_init(void)

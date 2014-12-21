@@ -8,10 +8,38 @@
         uint16_t u16_board_capture_duty_TIM2_value;
         uint16_t u16_board_capture_duty_TIM3_value;
 
-static  uint16_t u16_board_capture_period_TIM2_value;
-static  uint16_t u16_board_capture_period_TIM3_value;
+#define DUTY_ARRAY 50
+
+static  uint16_t u16_i = 0;
+static  uint16_t u16_duty_array[DUTY_ARRAY];
+        int32_t i32_board_capture_duty;
 
 static PWM_CAPTURE_STATE board_capture_command = PWM_CAPTURE_STOP;
+
+static void board_capture_duty_TIM2_filter( uint16_t u16_duty)
+{
+    i32_board_capture_duty = i32_board_capture_duty - (int32_t)u16_duty_array[u16_i];
+    u16_duty_array[u16_i]  = u16_duty;
+    i32_board_capture_duty = i32_board_capture_duty + (int32_t)u16_duty_array[u16_i];
+    u16_i++;
+    if(u16_i >= DUTY_ARRAY )
+    {
+        u16_i = 0;
+    }
+}
+
+static void board_capture_duty_TIM3_filter( uint16_t u16_duty)
+{
+    i32_board_capture_duty = i32_board_capture_duty + (int32_t)u16_duty_array[u16_i];/* Emulation of negative value */
+    u16_duty_array[u16_i]  = u16_duty;
+    i32_board_capture_duty = i32_board_capture_duty - (int32_t)u16_duty_array[u16_i];/* Emulation of negative value */
+    u16_i++;
+    if(u16_i >= DUTY_ARRAY )
+    {
+        u16_i = 0;
+    }
+}
+
 
 
 /* Get TIM2 captured PWM duty. */
@@ -45,16 +73,16 @@ void board_capture_pwm_TIM_start(void)
 BOARD_ERROR be_board_capture_pwm_init(void)
 {
     BOARD_ERROR be_result = BOARD_ERR_OK;
-    
+
     board_capture_gpio_TIM2_configuration();/* Initialisation of GPIO's for capture PWM. */
     board_capture_gpio_TIM3_configuration();/* Initialisation of GPIO's for capture PWM. */
-    
+
     board_capture_TIM2_NVIC_Configuration();
     board_capture_TIM3_NVIC_Configuration();
-    
+
     board_capture_tim_configuration();  /* Configuretion of capture timers. */
 
-    
+
     return(be_result);
 }
 
@@ -70,7 +98,7 @@ static void board_capture_gpio_TIM2_configuration(void)
     GPIO_InitStructure.GPIO_PuPd    = GPIO_PuPd_NOPULL;
     GPIO_InitStructure.GPIO_Pin     = GPIO_Pin_5;  /*PA5 -> TIM2_CH1 */
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-    
+
     /* Connect TIM2 pins to AF1 */
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_TIM2);
 }
@@ -93,7 +121,7 @@ static void board_capture_gpio_TIM3_configuration(void)
 
 static void board_capture_tim_configuration(void)
 {
-    board_capture_tim2_configuration();  
+    board_capture_tim2_configuration();
     board_capture_tim3_configuration();
 }
 
@@ -131,7 +159,7 @@ static void board_capture_tim2_configuration(void)
     RCC_APB1PeriphResetCmd(RCC_APB1Periph_TIM2, DISABLE);
 
     TIM_TimeBaseStructure.TIM_Prescaler     = 0U;
-    TIM_TimeBaseStructure.TIM_Period        = 0x1000U;
+    TIM_TimeBaseStructure.TIM_Period        = 0x4FFFU;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
@@ -145,24 +173,24 @@ static void board_capture_tim2_configuration(void)
 
     /* CH 1 is period, CH 2 duty. */
     TIM_PWMIConfig(TIM2, &TIM_ICInitStructure);
-    
+
     /* Trigger event on. */
     TIM_SelectMasterSlaveMode(TIM2, TIM_MasterSlaveMode_Enable);
 
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
-    
+
     /* Select trigger input PA5*/
     TIM_SelectInputTrigger(TIM2, TIM_TS_TI1FP1);
-    
+
     /* Reset counter on trigger event. */
     TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_Reset);
-    
+
     /* Enable trigger event. */
     TIM_SelectMasterSlaveMode(TIM2, TIM_MasterSlaveMode_Enable);
 
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-    
+
     TIM_Cmd(TIM2, ENABLE);
     NVIC_EnableIRQ(TIM2_IRQn);
 
@@ -181,7 +209,7 @@ static void board_capture_tim3_configuration(void)
     RCC_APB1PeriphResetCmd(RCC_APB1Periph_TIM3, DISABLE);
 
     TIM_TimeBaseStructure.TIM_Prescaler     = 0U;
-    TIM_TimeBaseStructure.TIM_Period        = 0x1000U; /* around 3 periods we wait for next pulse. */
+    TIM_TimeBaseStructure.TIM_Period        = 0x4FFFU; /* around 3 periods we wait for next pulse. */
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
@@ -195,24 +223,24 @@ static void board_capture_tim3_configuration(void)
 
     /* CH 1 is period, CH 2 duty. */
     TIM_PWMIConfig(TIM3, &TIM_ICInitStructure);
-    
-    /* Включаем события от триггера */
+
+    /* Turn on events from trigger.  */
     TIM_SelectMasterSlaveMode(TIM3, TIM_MasterSlaveMode_Enable);
 
     TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
-    
-    /* Выбираем источник для триггера: вход 1 (PA6) */
+
+    /* Choose input for trigger. */
     TIM_SelectInputTrigger(TIM3, TIM_TS_TI1FP1);
-    
-    /* По событию от триггера счётчик будет сбрасываться. */
+
+    /* Reset counter for trigger event on. */
     TIM_SelectSlaveMode(TIM3, TIM_SlaveMode_Reset);
-    
-    /* Включаем события от триггера */
+
+    /* Trigger event enable. */
     TIM_SelectMasterSlaveMode(TIM3, TIM_MasterSlaveMode_Enable);
 
     TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
     TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-    
+
     TIM_Cmd(TIM3, ENABLE);
     NVIC_EnableIRQ(TIM3_IRQn);
 
@@ -225,30 +253,36 @@ void TIM2_IRQHandler(void)
     if(TIM_GetITStatus(TIM2, TIM_IT_CC1) == SET)                    /* If compare capture has occured. */
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
-        u16_board_capture_period_TIM2_value = TIM_GetCapture1(TIM2);/* Get timer counts for Period. */
-        u16_board_capture_duty_TIM2_value   = TIM_GetCapture2(TIM2);/* Get timer counts for Duty. */
-        if(board_capture_command == PWM_CAPTURE_STOP)
-        {  
-            board_capture_command = PWM_CAPTURE_CW;
-            GPIO_SetBits( GPIOG, GPIO_Pin_13);                      /* Green led on. */  
-            board_encoder_emulation_start();
-        }
+
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);                 /* Clear Update counter, because we had interrupt from input pin. */
     }
-    
+
     if(TIM_GetITStatus(TIM2, TIM_IT_CC2) == SET)                    /* If compare capture has occured */
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
+        u16_board_capture_duty_TIM2_value   = TIM_GetCapture2(TIM2);/* Get timer counts for Duty. */
+        board_capture_duty_TIM2_filter( u16_board_capture_duty_TIM2_value);
+        /* TODO: here should be setup of encoder period */
+        /* Set duty value for encoder period calculation. */
+        board_encoder_emulation_set_frequency(i32_board_capture_duty);
+
+        if(board_capture_command == PWM_CAPTURE_STOP)
+        {
+            board_capture_command = PWM_CAPTURE_CW;
+            GPIO_SetBits( GPIOG, GPIO_Pin_13);                      /* Green led on. */
+            /* Start should be only start, do not setup encoder period. */
+            board_encoder_emulation_start();
+        }
     }
-    
+
     if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
     {
         if( board_capture_command == PWM_CAPTURE_CW )
-        {  
+        {
             board_capture_command = PWM_CAPTURE_STOP;               /* Set state to stop, because we had not input interrut during timer counting.*/
             board_encoder_emulation_stop();
             GPIO_ResetBits( GPIOG, GPIO_Pin_13);                    /* Green led off. */
-        } 
+        }
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);                 /* Counter overflow, reset interrupt */
     }
 }
@@ -258,31 +292,33 @@ void TIM3_IRQHandler(void)
     if(TIM_GetITStatus(TIM3, TIM_IT_CC1) == SET)                    /* If compare capture has occured. */
     {
         TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
-        u16_board_capture_period_TIM3_value = TIM_GetCapture1(TIM3);/* Get timer counts for Period. */
-        u16_board_capture_duty_TIM3_value   = TIM_GetCapture2(TIM3);/* Get timer counts for Duty. */
-        if(board_capture_command == PWM_CAPTURE_STOP)
-        {  
-            board_capture_command = PWM_CAPTURE_CCW;
-            GPIO_SetBits( GPIOG, GPIO_Pin_14);                      /* Red led on. */
-            board_encoder_emulation_start();
-        }
+
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update);                 /* Clear Update counter, because we had interrupt from input pin. */
     }
-    
+
     if(TIM_GetITStatus(TIM3, TIM_IT_CC2) == SET)                    /* If compare capture has occured */
     {
         TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
+        u16_board_capture_duty_TIM3_value   = TIM_GetCapture2(TIM3);/* Get timer counts for Duty. */
+        board_capture_duty_TIM3_filter(u16_board_capture_duty_TIM3_value);
+        /* Set duty value for encoder period calculation. */
+        board_encoder_emulation_set_frequency(i32_board_capture_duty);
+
+        if((board_capture_command == PWM_CAPTURE_STOP))
+        {
+            GPIO_SetBits( GPIOG, GPIO_Pin_14);                      /* Red led on. */
+            board_encoder_emulation_start();
+        }
     }
-    
-    
+
     if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
     {
         if( board_capture_command == PWM_CAPTURE_CCW )
-        {  
+        {
             board_capture_command = PWM_CAPTURE_STOP;               /* Set state to stop, because we had not input interrut during timer counting.*/
             board_encoder_emulation_stop();
             GPIO_ResetBits( GPIOG, GPIO_Pin_14);                    /* Red led off. */
-        } 
+        }
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update);                 /* Counter overflow, reset interrupt */
 
     }

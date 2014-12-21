@@ -15,12 +15,10 @@
        BOARD_ERROR board_encoder_emulation_init(void);
 static BOARD_ERROR board_encoder_emulation_timer_init(void);
 static        void board_encoder_emulation_set_period(uint16_t u16_period);
-
-              void board_encoder_emulation_set_frequency(int32_t i32_freq);
-
 static        void board_encoder_emulation_proccess(void);
-
-void board_encoder_emulation_start(void);
+static        void board_encoder_emulation_float_proccess(void);
+static        void _test_board_encoder_emulation_proccess(void);
+              void board_encoder_emulation_start(int32_t i32_omega);
               void board_encoder_emulation_stop(void);
 
               void board_encoder_emulation_set_target_period(uint16_t u16_period);
