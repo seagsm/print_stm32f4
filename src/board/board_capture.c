@@ -8,7 +8,7 @@
         uint16_t u16_board_capture_duty_TIM2_value;
         uint16_t u16_board_capture_duty_TIM3_value;
 
-#define DUTY_ARRAY 50
+#define DUTY_ARRAY 25
 
 static  uint16_t u16_i = 0;
 static  int16_t i16_duty_array[DUTY_ARRAY];
@@ -30,9 +30,9 @@ static void board_capture_duty_TIM2_filter( uint16_t u16_duty)
 
 static void board_capture_duty_TIM3_filter( uint16_t u16_duty)
 {
-    int16_t i16_duty;  
+    int16_t i16_duty;
     i16_duty = (int32_t)u16_duty;
-    
+
     i16_duty = 0 - i16_duty;
     i32_board_capture_duty = i32_board_capture_duty - i16_duty_array[u16_i];/* Emulation of negative value */
     i16_duty_array[u16_i]  = i16_duty;
@@ -70,7 +70,7 @@ void board_capture_pwm_TIM_start(void)
 {
 
     /* Enable counter. */
-
+    TIM_Cmd(TIM2, ENABLE);
     TIM_Cmd(TIM3, ENABLE);
 }
 

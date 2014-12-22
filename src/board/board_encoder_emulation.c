@@ -87,27 +87,28 @@ void board_encoder_emulation_proccess(void)
 
 void board_encoder_emulation_set_frequency(int32_t i32_freq)
 {
+    i32_freq = i32_freq * 2;
     if(i32_freq > 0)
-    {  
+    {
       u16_current_period = (390 - (i32_freq / 256)) * 90;
     }
     else if(i32_freq < 0)
     {
         u16_current_period = (390 + (i32_freq / 256)) * 90;
-    }  
+    }
     else
     {
 
     }
-    
+
     if(u16_current_period > 36000)
-    {  
+    {
        u16_current_period = 36000; /* 36000 * (1/90MHz) = 400uS -> 2.5kHz-> /4 => 625Hz of encoder, min freq. */
     }
     else if(u16_current_period < 1000)
     {
       u16_current_period = 1000; /* 45kHz -> /4 = 11250Hz, max freq of encoder. */
-    }  
+    }
 }
 
 /* Initialisation of timer for encoder emulation. */
