@@ -5,6 +5,7 @@
 
 static uint16_t u16_target_period = 0U;
 
+static uint16_t u16_current_period;
 
 /* Board encoder emulation init. */
 BOARD_ERROR board_encoder_emulation_init(void)
@@ -56,34 +57,22 @@ void TIM5_IRQHandler(void)
     if(TIM_GetITStatus(TIM5, TIM_IT_Update) != RESET)
     {
          TIM_ClearITPendingBit(TIM5, TIM_IT_Update);            /* Counter overflow, reset interrupt */
-         /* board_encoder_emulation_proccess(); */
+         board_encoder_emulation_set_period(u16_current_period);
+         board_encoder_emulation_proccess();
         // board_encoder_emulation_float_proccess();
     }
 }
 
 
-void board_encoder_emulation_set_frequency(int32_t i32_freq)
+void board_encoder_emulation_proccess(void)
 {
-
-
-
-}
-
-#if 0
-/* Float calculation of PID approaching. */
-static void board_encoder_emulation_float_proccess(void)
-{
-    /* Set new period to encoder timer. */
-    board_encoder_emulation_set_period(u16_current_period);
-
     /* Here is a place for generation of encoder signals. */
-    if(pcs_state == PWM_CAPTURE_CW)
+    if(i32_board_capture_duty > 0)
     {
         /* ++ */
         board_encoder_emulation_output(1);
-
     }
-    else if(pcs_state == PWM_CAPTURE_CCW)
+    else if(i32_board_capture_duty < 0)
     {
         /* -- */
         board_encoder_emulation_output(-1);
@@ -92,8 +81,34 @@ static void board_encoder_emulation_float_proccess(void)
     {
 
     }
+
 }
-#endif
+
+
+void board_encoder_emulation_set_frequency(int32_t i32_freq)
+{
+    if(i32_freq > 0)
+    {  
+      u16_current_period = (390 - (i32_freq / 256)) * 90;
+    }
+    else if(i32_freq < 0)
+    {
+        u16_current_period = (390 + (i32_freq / 256)) * 90;
+    }  
+    else
+    {
+
+    }
+    
+    if(u16_current_period > 36000)
+    {  
+       u16_current_period = 36000; /* 36000 * (1/90MHz) = 400uS -> 2.5kHz-> /4 => 625Hz of encoder, min freq. */
+    }
+    else if(u16_current_period < 1000)
+    {
+      u16_current_period = 1000; /* 45kHz -> /4 = 11250Hz, max freq of encoder. */
+    }  
+}
 
 /* Initialisation of timer for encoder emulation. */
 static BOARD_ERROR board_encoder_emulation_timer_init(void)
@@ -116,7 +131,7 @@ static BOARD_ERROR board_encoder_emulation_timer_init(void)
     /* Timer 5 work from 90MHz source clock. */
     /* Time Base configuration */
     TIM_TimeBaseStructure.TIM_Period        = ZERO_SPEED_PERIOD;
-    TIM_TimeBaseStructure.TIM_Prescaler     = 120U;          /* Ftimer=fsys/(Prescaler+1),for Prescaler=71 ,Ftimer=1MHz */
+    TIM_TimeBaseStructure.TIM_Prescaler     = 0U;          /* Ftimer=fsys/(Prescaler+1),for Prescaler=71 ,Ftimer=1MHz */
     TIM_TimeBaseStructure.TIM_ClockDivision = 0U;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);

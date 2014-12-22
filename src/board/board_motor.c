@@ -57,8 +57,8 @@ static void board_motor_timer_init(void)
     TIM_OCInitTypeDef TIM_OCInitStructure;
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
     
-    uint16_t u16_pwm_period = 1384U; /* 65000Hz. */
-    uint16_t u16_pwm_duty   = 400U;  /* 15.39uS - 4.4uS. */
+    uint16_t u16_pwm_period = BOARD_MOTOR_STEP_PERIOD;
+    uint16_t u16_pwm_duty   = BOARD_MOTOR_STEP_DUTY;
     
     RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOE, ENABLE);
     RCC_APB2PeriphClockCmd( RCC_APB2Periph_TIM1,  ENABLE);    

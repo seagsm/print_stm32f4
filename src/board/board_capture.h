@@ -10,6 +10,7 @@
 
 extern uint16_t u16_board_capture_duty_TIM2_value;
 extern uint16_t u16_board_capture_duty_TIM3_value;
+extern int32_t i32_board_capture_duty;
 
 BOARD_ERROR be_board_capture_pwm_init(void);
 

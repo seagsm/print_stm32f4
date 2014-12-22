@@ -11,16 +11,16 @@
 #define DUTY_ARRAY 50
 
 static  uint16_t u16_i = 0;
-static  uint16_t u16_duty_array[DUTY_ARRAY];
+static  int16_t i16_duty_array[DUTY_ARRAY];
         int32_t i32_board_capture_duty;
 
 static PWM_CAPTURE_STATE board_capture_command = PWM_CAPTURE_STOP;
 
 static void board_capture_duty_TIM2_filter( uint16_t u16_duty)
 {
-    i32_board_capture_duty = i32_board_capture_duty - (int32_t)u16_duty_array[u16_i];
-    u16_duty_array[u16_i]  = u16_duty;
-    i32_board_capture_duty = i32_board_capture_duty + (int32_t)u16_duty_array[u16_i];
+    i32_board_capture_duty = i32_board_capture_duty - i16_duty_array[u16_i];
+    i16_duty_array[u16_i]  = (int16_t)u16_duty;
+    i32_board_capture_duty = i32_board_capture_duty + i16_duty_array[u16_i];
     u16_i++;
     if(u16_i >= DUTY_ARRAY )
     {
@@ -30,10 +30,15 @@ static void board_capture_duty_TIM2_filter( uint16_t u16_duty)
 
 static void board_capture_duty_TIM3_filter( uint16_t u16_duty)
 {
-    i32_board_capture_duty = i32_board_capture_duty + (int32_t)u16_duty_array[u16_i];/* Emulation of negative value */
-    u16_duty_array[u16_i]  = u16_duty;
-    i32_board_capture_duty = i32_board_capture_duty - (int32_t)u16_duty_array[u16_i];/* Emulation of negative value */
+    int16_t i16_duty;  
+    i16_duty = (int32_t)u16_duty;
+    
+    i16_duty = 0 - i16_duty;
+    i32_board_capture_duty = i32_board_capture_duty - i16_duty_array[u16_i];/* Emulation of negative value */
+    i16_duty_array[u16_i]  = i16_duty;
+    i32_board_capture_duty = i32_board_capture_duty + i16_duty_array[u16_i];/* Emulation of negative value */
     u16_i++;
+
     if(u16_i >= DUTY_ARRAY )
     {
         u16_i = 0;
@@ -169,7 +174,7 @@ static void board_capture_tim2_configuration(void)
     TIM_ICInitStructure.TIM_ICPolarity      = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection     = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler     = TIM_ICPSC_DIV1;
-    TIM_ICInitStructure.TIM_ICFilter        = 0x00U;
+    TIM_ICInitStructure.TIM_ICFilter        = 0x0FU;
 
     /* CH 1 is period, CH 2 duty. */
     TIM_PWMIConfig(TIM2, &TIM_ICInitStructure);
@@ -189,6 +194,7 @@ static void board_capture_tim2_configuration(void)
     TIM_SelectMasterSlaveMode(TIM2, TIM_MasterSlaveMode_Enable);
 
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+    TIM_ITConfig(TIM2, TIM_IT_CC2, ENABLE);
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 
     TIM_Cmd(TIM2, ENABLE);
@@ -219,7 +225,7 @@ static void board_capture_tim3_configuration(void)
     TIM_ICInitStructure.TIM_ICPolarity      = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection     = TIM_ICSelection_DirectTI;
     TIM_ICInitStructure.TIM_ICPrescaler     = TIM_ICPSC_DIV1;
-    TIM_ICInitStructure.TIM_ICFilter        = 0x00U;
+    TIM_ICInitStructure.TIM_ICFilter        = 0x0FU;
 
     /* CH 1 is period, CH 2 duty. */
     TIM_PWMIConfig(TIM3, &TIM_ICInitStructure);
@@ -239,6 +245,7 @@ static void board_capture_tim3_configuration(void)
     TIM_SelectMasterSlaveMode(TIM3, TIM_MasterSlaveMode_Enable);
 
     TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
+    TIM_ITConfig(TIM3, TIM_IT_CC2, ENABLE);
     TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
 
     TIM_Cmd(TIM3, ENABLE);
@@ -273,6 +280,7 @@ void TIM2_IRQHandler(void)
             /* Start should be only start, do not setup encoder period. */
             board_encoder_emulation_start();
         }
+        TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     }
 
     if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
@@ -306,9 +314,11 @@ void TIM3_IRQHandler(void)
 
         if((board_capture_command == PWM_CAPTURE_STOP))
         {
+            board_capture_command = PWM_CAPTURE_CCW;
             GPIO_SetBits( GPIOG, GPIO_Pin_14);                      /* Red led on. */
             board_encoder_emulation_start();
         }
+        TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
     }
 
     if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)

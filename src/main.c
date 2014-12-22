@@ -4,12 +4,12 @@
 /* 2. An ideal code does not exist. */
 /*                 Vadym Volokitin. */
 
-/* Inc printer stepper motor driver controller for Epson.*/
+/* Inc printer stepper motor driver controller for Epson. */
 
 #include "main.h"
 
 
-int main( void)
+ int main( void)
 {
     BOARD_SYSTEM_STATE  bss_state;
     BOARD_ERROR         be_result = BOARD_ERR_OK;
@@ -56,6 +56,7 @@ int main( void)
                     /* DEBUG. */
                     /* Input parameter are pcs_capture_state CW or CCW. */
                     board_capture_pwm_TIM_start();
+                    board_motor_step(1);
                     //board_encoder_emulation_start();
                     //
                     /* DEBUG. */
@@ -69,7 +70,7 @@ int main( void)
                 gv_board_sys_tick_delay(100U);
 
                 /* DEBUG. */
-                board_motor_step(1);
+                
                 /* DEBUG. */
 
                 break;
