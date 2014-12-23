@@ -8,7 +8,7 @@
         uint16_t u16_board_capture_duty_TIM2_value;
         uint16_t u16_board_capture_duty_TIM3_value;
 
-#define DUTY_ARRAY 25
+#define DUTY_ARRAY 50
 
 static  uint16_t u16_i = 0;
 static  int16_t i16_duty_array[DUTY_ARRAY];

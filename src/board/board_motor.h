@@ -16,7 +16,7 @@
 /* So, for emulation PRN PWM, period = 65uS/(1/90MHz) = 5850 */
 /* and duty = (65us - 8uS)/(1/90MHz) = 5130 */
 #define BOARD_MOTOR_STEP_PERIOD     5850U; 
-#define BOARD_MOTOR_STEP_DUTY       3870U;//(22.0)//4140U(19);//4320U(17.0);//4842U(11.2);//5112(8.2);//5130U(8);//4050(20);
+#define BOARD_MOTOR_STEP_DUTY       5130;//3870U(22.0)//4140U(19);//4320U(17.0);//4842U(11.2);//5112(8.2);//5130U(8);//4050(20);
 
 #endif
        BOARD_ERROR board_motor_init(void);
