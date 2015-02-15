@@ -59,7 +59,6 @@ void TIM5_IRQHandler(void)
          TIM_ClearITPendingBit(TIM5, TIM_IT_Update);            /* Counter overflow, reset interrupt */
          board_encoder_emulation_set_period(u16_current_period);
          board_encoder_emulation_proccess();
-        // board_encoder_emulation_float_proccess();
     }
 }
 
@@ -84,6 +83,7 @@ void board_encoder_emulation_proccess(void)
 
 }
 
+#if 0
 void board_encoder_emulation_set_frequency(int32_t i32_freq)
 {
     if(i32_freq > 8999)
@@ -108,12 +108,12 @@ void board_encoder_emulation_set_frequency(int32_t i32_freq)
       u16_current_period = 1000; /* 45kHz -> /4 = 11250Hz, max freq of encoder. */
     }
 }
+#endif
 
-
-#if 0 /* This alghoritm pass half of test, till to head up.*/
+#if 1 /* This alghoritm pass half of test, till to head up.*/
 void board_encoder_emulation_set_frequency(int32_t i32_freq)
 {
-    i32_freq = i32_freq * 2;
+    //i32_freq = i32_freq * 2;
     if(i32_freq > 0)
     {
       u16_current_period = (390 - (i32_freq / 256)) * 90;
@@ -124,7 +124,7 @@ void board_encoder_emulation_set_frequency(int32_t i32_freq)
     }
     else
     {
-
+        u16_current_period = 390;
     }
 
     if(u16_current_period > 36000)
@@ -175,6 +175,9 @@ static BOARD_ERROR board_encoder_emulation_timer_init(void)
 static void board_encoder_emulation_output(int8_t i8_printer_step)
 {
     static int8_t i8_encoder_possition_counter = 0;
+
+  //GPIO_ToggleBits( GPIOA, GPIO_Pin_10);
+
 
     /* TODO: Here shoub be called function board_motor_step(direction). */
     board_motor_step(i8_printer_step);

@@ -256,7 +256,7 @@ static void board_capture_tim3_configuration(void)
 }
 
 void TIM2_IRQHandler(void)
-{
+{GPIO_ToggleBits( GPIOA, GPIO_Pin_10);
     if(TIM_GetITStatus(TIM2, TIM_IT_CC1) == SET)                    /* If compare capture has occured. */
     {
         TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
@@ -296,7 +296,7 @@ void TIM2_IRQHandler(void)
 }
 
 void TIM3_IRQHandler(void)
-{
+{GPIO_ToggleBits( GPIOA, GPIO_Pin_10);
     if(TIM_GetITStatus(TIM3, TIM_IT_CC1) == SET)                    /* If compare capture has occured. */
     {
         TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
